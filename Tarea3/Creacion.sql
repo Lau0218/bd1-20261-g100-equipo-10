@@ -1,0 +1,128 @@
+DROP TABLE IF EXISTS notificacion CASCADE;
+DROP TABLE IF EXISTS reporte CASCADE;
+DROP TABLE IF EXISTS oferta_laboral CASCADE;
+DROP TABLE IF EXISTS producto CASCADE;
+DROP TABLE IF EXISTS evento CASCADE;
+DROP TABLE IF EXISTS grupo CASCADE;
+DROP TABLE IF EXISTS mensaje CASCADE;
+DROP TABLE IF EXISTS reaccion CASCADE;
+DROP TABLE IF EXISTS comentario CASCADE;
+DROP TABLE IF EXISTS publicacion CASCADE;
+DROP TABLE IF EXISTS usuario CASCADE;
+DROP TABLE IF EXISTS rol CASCADE;
+
+
+
+-- TABLA ROL
+CREATE TABLE rol (
+    id_rol SERIAL PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL
+);
+
+-- TABLA USUARIO
+CREATE TABLE usuario (
+    id_usuario SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) UNIQUE NOT NULL,
+    contrasena VARCHAR(100) NOT NULL,
+    fecha_registro DATE NOT NULL,
+    id_rol INTEGER,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+-- PUBLICACION
+CREATE TABLE publicacion (
+    id_publicacion SERIAL PRIMARY KEY,
+    contenido TEXT NOT NULL,
+    fecha_publicacion DATE NOT NULL,
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+-- COMENTARIO
+CREATE TABLE comentario (
+    id_comentario SERIAL PRIMARY KEY,
+    contenido TEXT NOT NULL,
+    fecha_comentario DATE,
+    id_usuario INTEGER,
+    id_publicacion INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+);
+
+-- REACCION
+CREATE TABLE reaccion (
+    id_reaccion SERIAL PRIMARY KEY,
+    tipo_reaccion VARCHAR(20),
+    id_usuario INTEGER,
+    id_publicacion INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+);
+
+-- MENSAJE
+CREATE TABLE mensaje (
+    id_mensaje SERIAL PRIMARY KEY,
+    contenido TEXT,
+    fecha_envio DATE,
+    id_usuario_emisor INTEGER,
+    id_usuario_receptor INTEGER,
+    FOREIGN KEY (id_usuario_emisor) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_usuario_receptor) REFERENCES usuario(id_usuario)
+);
+
+-- GRUPO
+CREATE TABLE grupo (
+    id_grupo SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT,
+    fecha_creacion DATE
+);
+
+-- EVENTO
+CREATE TABLE evento (
+    id_evento SERIAL PRIMARY KEY,
+    titulo VARCHAR(100),
+    descripcion TEXT,
+    fecha_evento DATE,
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+-- PRODUCTO
+CREATE TABLE producto (
+    id_producto SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT,
+    precio DECIMAL,
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+-- OFERTA LABORAL
+CREATE TABLE oferta_laboral (
+    id_oferta SERIAL PRIMARY KEY,
+    titulo VARCHAR(100),
+    descripcion TEXT,
+    empresa VARCHAR(100),
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+-- REPORTE
+CREATE TABLE reporte (
+    id_reporte SERIAL PRIMARY KEY,
+    motivo TEXT,
+    fecha_reporte DATE,
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+-- NOTIFICACION
+CREATE TABLE notificacion (
+    id_notificacion SERIAL PRIMARY KEY,
+    mensaje TEXT,
+    fecha_notificacion DATE,
+    id_usuario INTEGER,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
